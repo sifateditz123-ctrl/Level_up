@@ -4,3 +4,4 @@ pycryptodome
 requests
 urllib3
 PyJWT
+gunicorn
