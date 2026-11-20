@@ -1,0 +1,1625 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070910">
+<title>FF Inspector — Premium Dashboard</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><style>
+:root {
+    --bg-0: #070910;
+    --panel: rgba(17,23,42,.88);
+    --panel-2: rgba(22,30,53,.97);
+    --border: rgba(255,255,255,.075);
+    --fg: #f1f4ff;
+    --fg-dim: #8993ad;
+    --accent: #ff913d;
+    --accent-2: #ff565c;
+    --accent-3: #55cfff;
+    --ok: #35e59a;
+    --err: #ff526d;
+    --grad-1: linear-gradient(135deg,#ff963f,#ff565c);
+    --grad-2: linear-gradient(135deg,#40d8ff,#7775ff);
+    --grad-3: linear-gradient(135deg,#32e6a0,#48caff);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-0);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 10% 0%,rgba(255,133,55,.14),transparent 40%),
+        radial-gradient(ellipse at 90% 15%,rgba(66,155,255,.13),transparent 42%),
+        radial-gradient(ellipse at 50% 100%,rgba(116,70,255,.08),transparent 50%),
+        #070910;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .13;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size: 45px 45px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+button,input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    color: inherit;
+    transition: .25s ease;
+}
+
+/* AUTHENTICATION */
+
+.auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 42px 34px;
+    background: rgba(15,20,37,.9);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    backdrop-filter: blur(25px);
+    box-shadow: 0 30px 100px rgba(0,0,0,.55);
+    animation: popIn .6s ease;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.brand-logo {
+    width: 49px;
+    height: 49px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--grad-1);
+    font-family: 'Orbitron',sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(255,120,50,.3);
+}
+
+.brand-name {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 21px;
+    font-weight: 900;
+    background: var(--grad-1);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-sub {
+    font-size: 10px;
+    color: var(--fg-dim);
+    letter-spacing: 2.5px;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+.auth-title {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 27px;
+    margin: 32px 0 9px;
+}
+
+.auth-desc {
+    color: var(--fg-dim);
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 27px;
+}
+
+.field {
+    margin-bottom: 19px;
+}
+
+.field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #aab3ce;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+
+.field input {
+    width: 100%;
+    padding: 15px 17px;
+    background: rgba(5,9,20,.8);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    transition: .25s;
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(255,145,61,.09);
+}
+
+.field input::placeholder {
+    color: #566079;
+}
+
+/* BUTTONS */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 14px 19px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: .25s ease;
+}
+
+.btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--grad-1);
+    color: white;
+    box-shadow: 0 8px 25px rgba(255,112,55,.22);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255,112,55,.38);
+    filter: brightness(1.1);
+}
+
+.btn-ghost {
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #dce3f8;
+}
+
+.btn-ghost:hover {
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.2);
+}
+
+.btn-danger {
+    background: rgba(255,75,105,.1);
+    border: 1px solid rgba(255,75,105,.25);
+    color: #ff7189;
+    padding: 8px 13px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.btn-danger:hover {
+    background: rgba(255,75,105,.2);
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--fg-dim);
+}
+
+.auth-switch a {
+    color: var(--accent);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.error-msg {
+    background: rgba(255,77,109,.1);
+    border: 1px solid rgba(255,77,109,.25);
+    color: #ff91a5;
+    font-size: 12px;
+    padding: 13px;
+    border-radius: 11px;
+    margin-bottom: 15px;
+}
+
+/* DASHBOARD */
+
+.dash {
+    max-width: 1350px;
+    margin: auto;
+    padding: 30px 28px 90px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 17px 23px;
+    background: rgba(15,21,39,.88);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    backdrop-filter: blur(25px);
+    margin-bottom: 30px;
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 14px;
+    background: rgba(46,204,113,.07);
+    border: 1px solid rgba(46,204,113,.16);
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #80e9b0;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 12px var(--ok);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    50% { opacity: .35; }
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: var(--grad-2);
+    font-weight: 900;
+    color: white;
+}
+
+/* STATISTICS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+    gap: 17px;
+    margin-bottom: 35px;
+}
+
+.stat {
+    position: relative;
+    overflow: hidden;
+    padding: 23px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.2);
+    transition: .3s;
+}
+
+.stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,145,61,.25);
+}
+
+.stat::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--grad-1);
+}
+
+.stat-label {
+    color: var(--fg-dim);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 13px;
+}
+
+.stat-value {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 29px;
+    font-weight: 900;
+    background: var(--grad-1);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-value.blue {
+    background: var(--grad-2);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.stat-value.green {
+    background: var(--grad-3);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+/* TOOLBAR */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.toolbar h2 {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.toolbar-actions .btn {
+    width: auto;
+    padding: 11px 17px;
+    font-size: 10px;
+}
+
+/* ACCOUNT GRID */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(310px,1fr));
+    gap: 20px;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    padding: 22px;
+    background: linear-gradient(145deg,rgba(24,32,56,.96),rgba(13,18,34,.96));
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 19px;
+    transition: .3s ease;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,transparent,var(--accent),var(--accent-3),transparent);
+    opacity: .55;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,145,61,.3);
+    box-shadow: 0 20px 50px rgba(0,0,0,.3);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 21px;
+}
+
+.card-name {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    max-width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-uid {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--fg-dim);
+    margin-top: 7px;
+}
+
+.creds-badge {
+    padding: 4px 7px;
+    background: rgba(46,204,113,.09);
+    border: 1px solid rgba(46,204,113,.2);
+    color: var(--ok);
+    font-size: 8px;
+    font-weight: 900;
+    border-radius: 5px;
+}
+
+.region-badge {
+    height: fit-content;
+    padding: 6px 11px;
+    background: rgba(77,208,255,.08);
+    border: 1px solid rgba(77,208,255,.2);
+    color: var(--accent-3);
+    border-radius: 7px;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+/* ACCOUNT STATS */
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 9px;
+    margin-bottom: 15px;
+}
+
+.stat-box {
+    padding: 13px 7px;
+    background: rgba(4,8,19,.55);
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-box .k {
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--fg-dim);
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.stat-box .v {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.arrow {
+    font-size: 10px;
+    margin-right: 2px;
+}
+
+.arrow.up { color: var(--ok); }
+.arrow.down { color: var(--err); }
+.arrow.same { color: var(--fg-dim); }
+
+/* EXP */
+
+.exp-gained {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 13px;
+    padding: 12px 14px;
+    background: rgba(46,204,113,.075);
+    border: 1px solid rgba(46,204,113,.17);
+    border-radius: 11px;
+    color: #83e9b0;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.exp-gained.up {
+    background: rgba(255,145,61,.09);
+    border-color: rgba(255,145,61,.22);
+    color: #ffb77c;
+}
+
+.exp-gained.zero {
+    background: rgba(255,255,255,.025);
+    border-color: var(--border);
+    color: var(--fg-dim);
+    font-weight: 600;
+}
+
+/* CARD FOOTER */
+
+.card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 17px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    font-size: 10px;
+    line-height: 1.9;
+    color: var(--fg-dim);
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.icon-btn {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.08);
+    font-size: 15px;
+}
+
+.icon-btn:hover {
+    background: rgba(255,255,255,.12);
+    transform: translateY(-2px);
+}
+
+.icon-btn.spin svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* EMPTY STATE */
+
+.empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--panel);
+    border: 1px dashed rgba(255,255,255,.13);
+    border-radius: 20px;
+}
+
+.empty h3 {
+    font-family: 'Orbitron',sans-serif;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.empty p {
+    color: var(--fg-dim);
+    font-size: 12px;
+}
+
+/* MODAL */
+
+.modal-back {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(2,4,12,.82);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+}
+
+.modal {
+    width: 100%;
+    max-width: 440px;
+    padding: 30px;
+    background: #11182c;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 21px;
+    box-shadow: 0 30px 100px rgba(0,0,0,.6);
+    animation: popIn .3s ease;
+}
+
+/* TOASTS */
+
+.toasts {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    width: calc(100% - 40px);
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 17px;
+    background: #151d33;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+    font-size: 12px;
+    font-weight: 600;
+    animation: slideIn .3s ease;
+}
+
+.toast.ok { border-left: 3px solid var(--ok); }
+.toast.err { border-left: 3px solid var(--err); }
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px) {
+    .dash {
+        padding: 18px 14px 60px;
+    }
+
+    .topbar {
+        padding: 13px;
+        border-radius: 14px;
+        top: 7px;
+    }
+
+    .brand-logo {
+        width: 40px;
+        height: 40px;
+        font-size: 17px;
+    }
+
+    .brand-name {
+        font-size: 16px;
+    }
+
+    .pill {
+        padding: 8px;
+        font-size: 0;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 11px;
+    }
+
+    .stat {
+        padding: 17px;
+    }
+
+    .stat-value {
+        font-size: 23px;
+    }
+
+    .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .toolbar-actions {
+        width: 100%;
+    }
+
+    .toolbar-actions .btn {
+        flex: 1;
+        padding: 12px 8px;
+        font-size: 9px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+}
+
+@media(max-width:380px) {
+    .auth-card {
+        padding: 30px 22px;
+    }
+
+    .stats-row {
+        gap: 5px;
+    }
+
+    .stat-box .v {
+        font-size: 12px;
+    }
+
+    .card-name {
+        max-width: 145px;
+    }
+
+    .card-actions {
+        gap: 4px;
+    }
+
+    .icon-btn {
+        width: 30px;
+        height: 30px;
+    }
+}
+</style></head><body><!-- AUTHENTICATION --><div id="authScreen" class="auth-wrap">
+    <div class="auth-card">    <div class="brand">
+        <div class="brand-logo">FF</div>
+        <div>
+            <div class="brand-name">FF INSPECTOR</div>
+            <div class="brand-sub">Match Bot & Tracker</div>
+        </div>
+    </div>
+
+    <h1 id="authTitle" class="auth-title">Welcome back</h1>
+    <p id="authDesc" class="auth-desc">Sign in to track your accounts.</p>
+
+    <div id="authError" class="error-msg hidden"></div>
+
+    <form id="authForm" onsubmit="handleAuth(event)">
+
+        <div class="field">
+            <label>Username</label>
+            <input id="username" type="text" placeholder="Enter username" required autocomplete="username">
+        </div>
+
+        <div class="field">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Enter password" required minlength="6" autocomplete="current-password">
+        </div>
+
+        <button id="authBtn" type="submit" class="btn btn-primary">
+            <span id="authBtnLabel">Sign In</span>
+        </button>
+
+    </form>
+
+    <div class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <a onclick="toggleAuthMode()" id="authSwitchLink">Create one</a>
+    </div>
+
+</div>
+
+</div><!-- DASHBOARD --><div id="dashScreen" class="hidden"><div class="dash">
+
+    <div class="topbar">
+
+        <div class="brand">
+            <div class="brand-logo">FF</div>
+            <div>
+                <div class="brand-name">FF INSPECTOR</div>
+                <div class="brand-sub">Premium Control Panel</div>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+
+            <span class="pill">
+                <span class="dot" id="inspectorDot"></span>
+                <span id="inspectorText">Inspector ready</span>
+            </span>
+
+            <div class="avatar" id="userAvatar">U</div>
+
+            <button class="icon-btn" title="Logout" onclick="logout()">⇥</button>
+
+        </div>
+
+    </div>
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-label">Accounts Tracked</div>
+            <div class="stat-value" id="statCount">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Total EXP Gained</div>
+            <div class="stat-value green" id="statGained">+0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Level Ups</div>
+            <div class="stat-value blue" id="statLevelUps">0</div>
+        </div>
+
+    </div>
+
+    <!-- ACCOUNT TOOLBAR -->
+
+    <div class="toolbar">
+
+        <h2>Your Accounts</h2>
+
+        <div class="toolbar-actions">
+
+            <button class="btn btn-ghost" onclick="refreshAll()" id="refreshAllBtn">
+                ↻ Refresh All
+            </button>
+
+            <button class="btn btn-primary" onclick="openAddModal()">
+                + Add Account
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="accountsGrid" class="grid"></div>
+
+</div>
+
+</div><!-- ADD ACCOUNT MODAL --><div id="addModal" class="modal-back hidden" onclick="if(event.target===this)closeAddModal()"><div class="modal">
+
+    <h3 style="font-family:Orbitron;font-size:20px;margin-bottom:8px">
+        Add Account
+    </h3>
+
+    <p style="color:var(--fg-dim);font-size:13px;line-height:1.7;margin-bottom:20px">
+        Enter your account credentials to connect and track your Free Fire account.
+    </p>
+
+    <form id="addForm" onsubmit="handleAdd(event)">
+
+        <div class="field">
+            <label>Free Fire UID / Email</label>
+            <input id="newUid" type="text" placeholder="Enter UID" required autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>Account Password</label>
+            <input id="newPassword" type="password" placeholder="Enter password" required autocomplete="new-password">
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:12px">
+
+            <button type="button" class="btn btn-ghost" onclick="closeAddModal()">
+                Cancel
+            </button>
+
+            <button type="submit" class="btn btn-primary" id="addBtn">
+                Login & Add
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div><div class="toasts" id="toasts"></div><script>
+const API = "";
+
+const state = {
+    token: localStorage.getItem("ff_token"),
+    user: JSON.parse(localStorage.getItem("ff_user") || "null"),
+    accounts: [],
+    authMode: "login",
+    pollTimer: null
+};
+
+const $ = (id) => document.getElementById(id);
+
+function show(id) {
+    $(id).classList.remove("hidden");
+}
+
+function hide(id) {
+    $(id).classList.add("hidden");
+}
+
+async function api(path, opts = {}) {
+
+    const headers = {
+        "Content-Type": "application/json",
+        ...(opts.headers || {})
+    };
+
+    if (state.token) {
+        headers["Authorization"] = "Bearer " + state.token;
+    }
+
+    const res = await fetch(API + path, {
+        ...opts,
+        headers
+    });
+
+    let data;
+
+    try {
+        data = await res.json();
+    } catch {
+        data = {};
+    }
+
+    if (!res.ok) {
+        if (res.status === 401) {
+            logout();
+        }
+
+        throw new Error(data.error || `HTTP ${res.status}`);
+    }
+
+    return data;
+}
+
+function toast(msg, kind = "info", ttl = 3800) {
+
+    const box = document.createElement("div");
+
+    box.className = "toast " + kind;
+
+    const icon = document.createElement("span");
+    icon.textContent = kind === "ok" ? "✓" : kind === "err" ? "⚠" : "ℹ";
+
+    const message = document.createElement("span");
+    message.textContent = msg;
+
+    box.append(icon, message);
+
+    $("toasts").appendChild(box);
+
+    setTimeout(() => {
+        box.style.opacity = "0";
+
+        setTimeout(() => box.remove(), 300);
+
+    }, ttl);
+}
+
+function escapeHtml(s) {
+
+    return String(s ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+
+}
+
+/* AUTHENTICATION */
+
+function toggleAuthMode() {
+
+    state.authMode = state.authMode === "login" ? "register" : "login";
+
+    const reg = state.authMode === "register";
+
+    $("authTitle").textContent = reg ? "Create account" : "Welcome back";
+
+    $("authDesc").textContent = reg
+        ? "Create your FF Inspector account."
+        : "Sign in to track your accounts.";
+
+    $("authBtnLabel").textContent = reg ? "Create Account" : "Sign In";
+
+    $("authSwitchText").textContent = reg
+        ? "Already registered?"
+        : "Don't have an account?";
+
+    $("authSwitchLink").textContent = reg ? "Sign in" : "Create one";
+
+    $("password").autocomplete = reg ? "new-password" : "current-password";
+
+    hide("authError");
+}
+
+async function handleAuth(e) {
+
+    e.preventDefault();
+
+    const btn = $("authBtn");
+
+    btn.disabled = true;
+
+    hide("authError");
+
+    try {
+
+        const data = await api(
+            state.authMode === "login" ? "/api/login" : "/api/register",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    username: $("username").value.trim(),
+                    password: $("password").value
+                })
+            }
+        );
+
+        state.token = data.token;
+
+        state.user = {
+            id: data.user_id,
+            username: data.username
+        };
+
+        localStorage.setItem("ff_token", state.token);
+
+        localStorage.setItem("ff_user", JSON.stringify(state.user));
+
+        await enterDashboard();
+
+    } catch (err) {
+
+        $("authError").textContent = err.message;
+
+        show("authError");
+
+    } finally {
+
+        btn.disabled = false;
+
+    }
+}
+
+function logout() {
+
+    if (state.pollTimer) {
+        clearInterval(state.pollTimer);
+        state.pollTimer = null;
+    }
+
+    localStorage.removeItem("ff_token");
+    localStorage.removeItem("ff_user");
+
+    state.token = null;
+    state.user = null;
+    state.accounts = [];
+
+    hide("dashScreen");
+    show("authScreen");
+}
+
+/* DASHBOARD */
+
+async function enterDashboard() {
+
+    hide("authScreen");
+    show("dashScreen");
+
+    $("userAvatar").textContent =
+        (state.user?.username || "U")[0].toUpperCase();
+
+    await loadAccounts();
+
+    if (state.pollTimer) {
+        clearInterval(state.pollTimer);
+    }
+
+    state.pollTimer = setInterval(pollAccounts, 5000);
+}
+
+async function pollAccounts() {
+
+    if (!state.token || $("dashScreen").classList.contains("hidden")) {
+        return;
+    }
+
+    try {
+
+        state.accounts = await api("/api/accounts");
+
+        renderAccounts();
+
+    } catch (e) {
+
+        console.error("Account polling failed:", e.message);
+
+    }
+}
+
+async function loadAccounts() {
+
+    try {
+
+        state.accounts = await api("/api/accounts");
+
+        renderAccounts();
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    }
+}
+
+function renderAccounts() {
+
+    const grid = $("accountsGrid");
+
+    const accs = state.accounts;
+
+    $("statCount").textContent = accs.length;
+
+    const totalGained = accs.reduce(
+        (s, a) => s + (Number(a.total_exp) || 0),
+        0
+    );
+
+    $("statGained").textContent = "+" + totalGained.toLocaleString();
+
+    $("statLevelUps").textContent =
+        accs.filter(a => a.level_change === 1).length;
+
+    if (!accs.length) {
+
+        grid.innerHTML = `
+            <div class="empty">
+                <h3>No Accounts Yet</h3>
+                <p>Add an account to start tracking your EXP and levels.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    grid.innerHTML = accs.map(a => renderCard(a)).join("");
+}
+
+function renderCard(a) {
+
+    const arrowClass =
+        a.level_change === 1 ? "up" :
+        a.level_change === -1 ? "down" : "same";
+
+    const arrowChar =
+        a.level_change === 1 ? "▲" :
+        a.level_change === -1 ? "▼" : "•";
+
+    const isPlaying = a.match_status === "playing";
+
+    const exp = Number(a.exp) || 0;
+    const totalExp = Number(a.total_exp) || 0;
+    const expGained = Number(a.exp_gained);
+
+    let expGainedHtml = (
+        a.exp_gained !== null &&
+        a.exp_gained !== undefined
+    )
+        ? `
+            <div class="exp-gained ${expGained > 0 ? "" : "zero"}">
+                <span>EXP Gained (This Check)</span>
+                <span>${expGained > 0 ? "+" : ""}${expGained.toLocaleString()}</span>
+            </div>
+        `
+        : `
+            <div class="exp-gained zero">
+                <span>EXP Gained (This Check)</span>
+                <span>—</span>
+            </div>
+        `;
+
+    if (a.level_change === 1) {
+
+        expGainedHtml = `
+            <div class="exp-gained up">
+                <span>⭐ LEVEL UP!</span>
+                <span>LEVEL ${escapeHtml(a.prev_level)} → ${escapeHtml(a.level)}</span>
+            </div>
+        `;
+
+    }
+
+    const accountId = JSON.stringify(a.id);
+
+    return `
+        <div class="card">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-name">
+                        ${escapeHtml(a.name || "Unknown")}
+                    </div>
+
+                    <div class="card-uid">
+
+                        ${escapeHtml(a.uid)}
+
+                        ${a.has_password
+                            ? `<span class="creds-badge">🔒 CREDS SAVED</span>`
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="region-badge">
+                    ${escapeHtml(a.region || "—")}
+                </div>
+
+            </div>
+
+            <div class="stats-row">
+
+                <div class="stat-box">
+                    <div class="k">Level</div>
+                    <div class="v">
+                        <span class="arrow ${arrowClass}">${arrowChar}</span>
+                        ${escapeHtml(a.level ?? "?")}
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="k">Current EXP</div>
+                    <div class="v">${exp.toLocaleString()}</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="k">Total EXP</div>
+                    <div class="v" style="color:var(--ok)">
+                        ${totalExp.toLocaleString()}
+                    </div>
+                </div>
+
+            </div>
+
+            ${expGainedHtml}
+
+            <div class="card-foot">
+
+                <span>
+                    Status:
+                    <b style="color:${isPlaying ? "var(--ok)" : "var(--fg-dim)"}">
+                        ${isPlaying ? "Playing Match" : "Idle"}
+                    </b>
+                    <br>
+                    Matches: ${Number(a.matches_played) || 0}
+                </span>
+
+                <div class="card-actions">
+
+                    ${isPlaying
+                        ? `<button class="btn-danger" onclick="toggleMatch(${accountId},'stop')">Stop</button>`
+                        : `<button class="btn-ghost" style="padding:7px 12px;font-size:10px;border-color:rgba(46,204,113,.4);color:var(--ok)" onclick="toggleMatch(${accountId},'start')">Play</button>`
+                    }
+
+                    <button class="icon-btn" title="Refresh Stats" onclick="refreshOne(${accountId},this)">
+                        ↻
+                    </button>
+
+                    <button class="icon-btn" style="color:var(--err);background:rgba(255,77,109,.1)" title="Delete" onclick="removeAccount(${accountId})">
+                        ✕
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+/* REFRESH ACCOUNT */
+
+async function refreshOne(id, btn) {
+
+    if (btn) {
+        btn.classList.add("spin");
+        btn.disabled = true;
+    }
+
+    try {
+
+        const up = await api(
+            `/api/accounts/${encodeURIComponent(id)}/check?force=true`,
+            { method: "POST" }
+        );
+
+        state.accounts = state.accounts.map(a =>
+            a.id === id ? up : a
+        );
+
+        renderAccounts();
+
+        toast("Account refreshed successfully", "ok");
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    } finally {
+
+        if (btn) {
+            btn.classList.remove("spin");
+            btn.disabled = false;
+        }
+
+    }
+}
+
+/* REFRESH ALL */
+
+async function refreshAll() {
+
+    const btn = $("refreshAllBtn");
+
+    btn.disabled = true;
+
+    btn.textContent = "Refreshing...";
+
+    try {
+
+        state.accounts = await api(
+            "/api/accounts/check-all?force=true",
+            { method: "POST" }
+        );
+
+        renderAccounts();
+
+        toast("All accounts refreshed", "ok");
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    } finally {
+
+        btn.disabled = false;
+
+        btn.textContent = "↻ Refresh All";
+
+    }
+}
+
+/* DELETE ACCOUNT */
+
+async function removeAccount(id) {
+
+    if (!confirm("Are you sure you want to remove this account?")) {
+        return;
+    }
+
+    try {
+
+        await api(
+            `/api/accounts/${encodeURIComponent(id)}`,
+            { method: "DELETE" }
+        );
+
+        state.accounts = state.accounts.filter(a => a.id !== id);
+
+        renderAccounts();
+
+        toast("Account removed successfully", "ok");
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    }
+}
+
+/* MATCH CONTROL */
+
+async function toggleMatch(id, action) {
+
+    try {
+
+        await api(
+            `/api/accounts/${encodeURIComponent(id)}/match/${action}`,
+            { method: "POST" }
+        );
+
+        toast(`Match ${action === "start" ? "started" : "stopped"}`, "ok");
+
+        await loadAccounts();
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    }
+}
+
+/* ADD ACCOUNT MODAL */
+
+function openAddModal() {
+
+    show("addModal");
+
+    setTimeout(() => $("newUid").focus(), 100);
+
+}
+
+function closeAddModal() {
+
+    hide("addModal");
+
+    $("newUid").value = "";
+
+    $("newPassword").value = "";
+
+}
+
+/* ADD ACCOUNT */
+
+async function handleAdd(e) {
+
+    e.preventDefault();
+
+    const btn = $("addBtn");
+
+    btn.disabled = true;
+
+    btn.textContent = "Logging in...";
+
+    try {
+
+        const acc = await api("/api/accounts", {
+
+            method: "POST",
+
+            body: JSON.stringify({
+
+                uid: $("newUid").value.trim(),
+
+                password: $("newPassword").value
+
+            })
+
+        });
+
+        state.accounts.push(acc);
+
+        renderAccounts();
+
+        closeAddModal();
+
+        toast("Account added successfully!", "ok");
+
+    } catch (e) {
+
+        toast(e.message, "err");
+
+    } finally {
+
+        btn.disabled = false;
+
+        btn.textContent = "Login & Add";
+
+    }
+}
+
+/* AUTO LOGIN */
+
+(function boot() {
+
+    if (state.token && state.user) {
+
+        fetch(API + "/api/me", {
+
+            headers: {
+                Authorization: "Bearer " + state.token
+            }
+
+        })
+
+        .then(r => {
+
+            if (r.ok) {
+
+                return enterDashboard();
+
+            }
+
+            logout();
+
+        })
+
+        .catch(logout);
+
+    }
+
+})();
+
+/* ESCAPE MODAL */
+
+document.addEventListener("keydown", e => {
+
+    if (e.key === "Escape" && !$("addModal").classList.contains("hidden")) {
+
+        closeAddModal();
+
+    }
+
+});
+</script></body>
+</html>
